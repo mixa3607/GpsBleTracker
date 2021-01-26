@@ -1,4 +1,4 @@
-struct gpsSnapshot
+struct GpsGeoInfo
 {
   unsigned short Id;
 
