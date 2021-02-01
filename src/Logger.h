@@ -1,9 +1,10 @@
+#pragma once
 #include <Stream.h>
 
 class Logger
 {
 private:
-  const char * _prefix;
+  const char *_prefix;
   Stream *_output;
 
 public:
@@ -17,7 +18,7 @@ public:
   {
     if (_output)
     {
-      _output->println(String(_prefix) + ": " + text);
+      _output->print(String(_prefix) + ": " + text + "\n");
     }
   }
 };

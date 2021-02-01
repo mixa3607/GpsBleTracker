@@ -1,5 +1,7 @@
+#pragma once
 #include <Adafruit_SSD1306.h>
 #include <Logger.h>
+#include <Gps.h>
 
 enum ScreenMessageType : uint8_t
 {
@@ -25,10 +27,12 @@ struct DisplayTaskParams
 {
   Logger *logger;
   xQueueHandle MessagesQueue;
+  xQueueHandle gpsGeoQueue;
 };
 
 Adafruit_SSD1306 *CreateDisplay(Logger *logger)
 {
+  auto a = F("a");
   const uint8_t addr = 0x3C;
   //const uint8_t sdaPin = 21;
   //const uint8_t sclPin = 22;
@@ -36,7 +40,7 @@ Adafruit_SSD1306 *CreateDisplay(Logger *logger)
   const uint8_t height = 32;
 
   logger->Log("Init display on addr 0x3c and core " + String(xPortGetCoreID()));
-  auto *display = new Adafruit_SSD1306(width, height, &Wire, -1);
+  auto *display = new Adafruit_SSD1306(width, height, &Wire, -1); //sda=25; scl=26
   if (!display->begin(SSD1306_SWITCHCAPVCC, addr))
   {
     logger->Log("Display begin failed");
@@ -44,7 +48,7 @@ Adafruit_SSD1306 *CreateDisplay(Logger *logger)
     return nullptr;
   }
 
-  display->clearDisplay();
+  //display->clearDisplay();
   display->setTextSize(1);
   display->setTextColor(SSD1306_WHITE);
   display->setTextSize(3);
@@ -98,7 +102,7 @@ void DisplayTask(void *pvParameters)
   vTaskDelete(nullptr);
 }
 
-std::pair<TaskHandle_t, QueueHandle_t> CreateDisplayTask(Stream *const logOut)
+std::pair<TaskHandle_t, QueueHandle_t> CreateDisplayTask(Stream *const logOut, const QueueHandle_t gpsGeoQueue)
 {
   const int8_t coreId = 1;
   const int8_t prior = 5;
@@ -118,6 +122,7 @@ std::pair<TaskHandle_t, QueueHandle_t> CreateDisplayTask(Stream *const logOut)
   auto *params = new DisplayTaskParams();
   params->logger = logger;
   params->MessagesQueue = msgQueue;
+  params->gpsGeoQueue = gpsGeoQueue;
 
   TaskHandle_t taskHandler = nullptr;
   if (xTaskCreatePinnedToCore(DisplayTask, taskName, 2000, params, prior, &taskHandler, coreId) == pdTRUE)
