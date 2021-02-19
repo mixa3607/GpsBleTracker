@@ -35,10 +35,10 @@ namespace Display
 
         display.clearDisplay();
         display.setCursor(0, 0);
-        display.printf("%d:%d:%d %d.%d.%d\n", hour, min, sec, day, month, year);
-        display.printf("Lat: %e\n", gpsInfo->latitude);
-        display.printf("Lng: %e\n", gpsInfo->longtitude);
-        display.printf("Sa:%d, HD:%e %d\n", gpsInfo->satellites, hdop, gpsInfo->id);
+        display.printf("%02d:%02d:%02d %02d.%02d.%04d\n", hour, min, sec, day, month, year);
+        display.printf("Lat: %.9f\n", gpsInfo->latitude);
+        display.printf("Lng: %.9f\n", gpsInfo->longtitude);
+        display.printf("Sa:%2d, HD:%.2f %d\n", gpsInfo->satellites, hdop, gpsInfo->id);
         display.display();
     }
 

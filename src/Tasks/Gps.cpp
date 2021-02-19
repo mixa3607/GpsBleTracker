@@ -21,9 +21,9 @@ namespace Gps
     uint8_t day = (fix->date / 10000);
     double hdop = static_cast<double>(fix->hdop) / 100;
     millis();
-    ESP_LOGV(TAG, "Id: %d, Sa: %d, HDOP: %e", fix->id, fix->satellites, hdop);
-    ESP_LOGV(TAG, "Lat: %e, Lng: %e", fix->latitude, fix->longtitude);
-    ESP_LOGV(TAG, "DT: %d:%d:%d %d.%d.%d", hour, min, sec, day, month, year);
+    ESP_LOGV(TAG, "Id: %d, Sa: %2d, HDOP: %.4f", fix->id, fix->satellites, hdop);
+    ESP_LOGV(TAG, "Lat: %.10f, Lng: %.10f", fix->latitude, fix->longtitude);
+    ESP_LOGV(TAG, "DT: %02d:%02d:%02d %02d.%02d.%04d", hour, min, sec, day, month, year);
   }
 
   bool Init()
@@ -118,12 +118,12 @@ namespace Gps
     uint16_t gpsFixId = 0;
     while (true)
     {
-      while (gpsSerial->available() == 0)
+      while (GpsSerial->available() == 0)
         vTaskDelay(pdMS_TO_TICKS(1));
 
-      while (gpsSerial->available() > 0)
+      while (GpsSerial->available() > 0)
       {
-        if (gps.encode(gpsSerial->read()))
+        if (gps.encode(GpsSerial->read()))
         {
           gpsFixId += FixGps(gpsFixId);
         }

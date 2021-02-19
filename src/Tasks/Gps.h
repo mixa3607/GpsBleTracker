@@ -3,8 +3,6 @@
 #include <stdint.h>
 #include <FreeRTOS.h>
 
-#define GPS_TASK_MOCK 1
-
 namespace Gps
 {
   struct GpsGeoInfo
